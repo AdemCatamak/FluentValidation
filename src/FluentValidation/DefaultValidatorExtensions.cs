@@ -18,6 +18,7 @@
 
 namespace FluentValidation {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Reflection;
@@ -174,6 +175,114 @@ namespace FluentValidation {
 		}
 
 		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is outside of the specified range. The range is inclusive.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <typeparam name="TItemModel">Type of the collection item</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection<TItemModel>> Count<T, TItemModel>(this IRuleBuilder<T, ICollection<TItemModel>> ruleBuilder, int min, int max, Func<TItemModel, bool> filter = null) {
+			return ruleBuilder.SetValidator(new CountValidator<T, TItemModel>(min, max, filter));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is outside of the specified range. The range is inclusive.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <typeparam name="TItemModel">Type of the collection item</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection<TItemModel>> Count<T, TItemModel>(this IRuleBuilder<T, ICollection<TItemModel>> ruleBuilder, Func<T, int> min, Func<T, int> max, Func<TItemModel, bool> filter = null) {
+			return ruleBuilder.SetValidator(new CountValidator<T,TItemModel>(min, max, filter));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is not equal to the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <typeparam name="TItemModel">Type of the collection item</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="exactLength"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection<TItemModel>> Count<T, TItemModel>(this IRuleBuilder<T, ICollection<TItemModel>> ruleBuilder, int exactLength, Func<TItemModel, bool> filter = null) {
+			return ruleBuilder.SetValidator(new ExactCountValidator<T,TItemModel>(exactLength, filter));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is not equal to the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <typeparam name="TItemModel">Type of the collection item</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="exactLength"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection<TItemModel>> Count<T, TItemModel>(this IRuleBuilder<T, ICollection<TItemModel>> ruleBuilder, Func<T, int> exactLength, Func<TItemModel, bool> filter = null) {
+			return ruleBuilder.SetValidator(new ExactCountValidator<T,TItemModel>(exactLength, filter));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is outside of the specified range. The range is inclusive.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection> Count<T>(this IRuleBuilder<T, ICollection> ruleBuilder, int min, int max) {
+			return ruleBuilder.SetValidator(new CountValidator<T>(min, max));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is outside of the specified range. The range is inclusive.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection> Count<T>(this IRuleBuilder<T, ICollection> ruleBuilder, Func<T, int> min, Func<T, int> max) {
+			return ruleBuilder.SetValidator(new CountValidator<T>(min, max));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is not equal to the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="exactLength"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection> Count<T>(this IRuleBuilder<T, ICollection> ruleBuilder, int exactLength) {
+			return ruleBuilder.SetValidator(new ExactCountValidator<T>(exactLength));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is not equal to the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="exactLength"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection> Count<T>(this IRuleBuilder<T, ICollection> ruleBuilder, Func<T, int> exactLength) {
+			return ruleBuilder.SetValidator(new ExactCountValidator<T>(exactLength));
+		}
+
+		/// <summary>
 		/// Defines a regular expression validator on the current rule builder, but only for string properties.
 		/// Validation will fail if the value returned by the lambda does not match the regular expression.
 		/// </summary>
@@ -207,6 +316,59 @@ namespace FluentValidation {
 		/// <returns></returns>
 		public static IRuleBuilderOptions<T, string> MinimumLength<T>(this IRuleBuilder<T, string> ruleBuilder, int minimumLength) {
 			return ruleBuilder.SetValidator(new MinimumLengthValidator<T>(minimumLength));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is greater than the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <typeparam name="TItemModel">Type of the collection item</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="maximumLength"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection<TItemModel>> MaximumCount<T, TItemModel>(this IRuleBuilder<T, ICollection<TItemModel>> ruleBuilder, int maximumLength, Func<TItemModel, bool> filter = null) {
+			return ruleBuilder.SetValidator(new MaximumCountValidator<T, TItemModel>(maximumLength, filter));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is greater than the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="maximumLength"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection> MaximumCount<T>(this IRuleBuilder<T, ICollection> ruleBuilder, int maximumLength) {
+			return ruleBuilder.SetValidator(new MaximumCountValidator<T>(maximumLength));
+		}
+
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is less than the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <typeparam name="TItemModel">Type of the collection item</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="minimumLength"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection<TItemModel>> MinimumCount<T,TItemModel>(this IRuleBuilder<T, ICollection<TItemModel>> ruleBuilder, int minimumLength, Func<TItemModel, bool> filter = null) {
+			return ruleBuilder.SetValidator(new MinimumCountValidator<T,TItemModel>(minimumLength,filter));
+		}
+
+		/// <summary>
+		/// Defines a count validator on the current rule builder, but only for collection properties.
+		/// Validation will fail if the count of the items is less than the count specified.
+		/// </summary>
+		/// <typeparam name="T">Type of object being validated</typeparam>
+		/// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
+		/// <param name="minimumLength"></param>
+		/// <returns></returns>
+		public static IRuleBuilderOptions<T, ICollection> MinimumCount<T>(this IRuleBuilder<T, ICollection> ruleBuilder, int minimumLength) {
+			return ruleBuilder.SetValidator(new MinimumCountValidator<T>(minimumLength));
 		}
 
 		/// <summary>
